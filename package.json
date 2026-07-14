@@ -1,6 +1,7 @@
 {
   "name": "ai-se_project_mesh-ai",
   "version": "1.0.0",
+  "part": "2",
   "description": "Express-based AI document chat platform for querying uploaded PDFs",
   "homepage": "https://github.com/redwilbarrow/ai-se_project_mesh-ai#readme",
   "bugs": {
@@ -21,11 +22,21 @@
     "lint": "eslint src/"
   },
   "dependencies": {
-    "express": "^5.2.1"
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.7.4",
+    "multer": "^2.2.0",
+    "openai": "^6.46.0",
+    "pdf-parse": "^2.4.5"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.2.0",
     "@types/node": "^26.0.1",
     "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
