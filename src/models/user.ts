@@ -4,19 +4,18 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     trim: true,
-    required: [true, 'Email is required'],
+    required: true,
     unique: true,
   },
   password: {
     type: String,
-    trim: true,
-    required: [true, 'Must enter a password'],
-    minlength: [12, 'Password must be at least 12 characters'],
+    required: true,
+    minlength: 8,
   },
   name: {
     type: String,
     trim: true,
-    required: [true, 'Name cannot be empty'],
+    required: true,
   },
 });
 
