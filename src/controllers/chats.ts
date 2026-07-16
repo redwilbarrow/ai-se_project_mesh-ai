@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import Chat from '../models/chat.js';
 import Message from '../models/message.js';
 
-export const getChats = async (req: Request, res: Response): Promise<void> => {
+export const getChats = async (req: Request, res: Response) => {
   const userId = req.user!.userId;
   // TODO: Add try/catch error handling around fetching chats.
   const chats = await Chat.find({ userId });
@@ -14,20 +14,16 @@ export const getChats = async (req: Request, res: Response): Promise<void> => {
   });
 };
 
-export const createChat = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
+export const createChat = async (req: Request, res: Response) => {
   const { title } = req.body;
   // TODO: Add try/catch error handling around chat creation.
 
   if (!title) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       data: null,
       error: { message: 'Title is required' },
     });
-    return;
   }
 
   const chat = await Chat.create({
@@ -42,18 +38,17 @@ export const createChat = async (
   });
 };
 
-export const getChat = async (req: Request, res: Response): Promise<void> => {
+export const getChat = async (req: Request, res: Response) => {
   const userId = req.user!.userId;
   // TODO: Add try/catch error handling around fetching chat and messages.
   const chat = await Chat.findOne({ _id: req.params.id, userId });
 
   if (!chat) {
-    res.status(404).json({
+    return res.status(404).json({
       success: false,
       data: null,
       error: { message: 'Chat not found' },
     });
-    return;
   }
 
   const messages = await Message.find({ chatId: chat._id }).sort({

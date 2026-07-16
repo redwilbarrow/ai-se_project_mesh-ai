@@ -16,6 +16,7 @@ dist
 .vscode
 copilot-instructions.md
 /specs
+/uploads
 
 # Secrets
 .env
