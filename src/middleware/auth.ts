@@ -14,7 +14,7 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as unknown as {
+    const decoded = jwt.verify(token!, process.env.JWT_SECRET!) as unknown as {
       userId: string;
     };
     req.user = decoded;
