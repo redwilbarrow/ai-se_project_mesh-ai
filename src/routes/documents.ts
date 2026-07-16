@@ -12,6 +12,7 @@ const upload = multer({ dest: 'uploads/' });
 
 const documentsRouter = Router();
 
+// TODO: update upload route to support duplicate-file replacement flow, e.g. accept a confirm flag or add a separate "replace document" endpoint.
 documentsRouter.post('/', auth, upload.single('file'), uploadDocument);
 documentsRouter.get('/', auth, getDocuments);
 documentsRouter.get('/:id', auth, fetchDocument);
