@@ -6,13 +6,14 @@ import {
   deleteChat,
   messageChat,
 } from '../controllers/chats.js';
+import { auth } from '../middleware/auth.js';
 
 const chatRouter = Router();
 
-chatRouter.get('/', listChats);
-chatRouter.post('/', createChat);
-chatRouter.get('/:id', fetchChat);
-chatRouter.delete('/:id', deleteChat);
-chatRouter.post('/:id/messages', messageChat);
+chatRouter.get('/', auth, listChats);
+chatRouter.post('/', auth, createChat);
+chatRouter.get('/:id', auth, fetchChat);
+chatRouter.delete('/:id', auth, deleteChat);
+chatRouter.post('/:id/messages', auth, messageChat);
 
 export { chatRouter };
