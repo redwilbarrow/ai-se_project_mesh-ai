@@ -15,6 +15,11 @@ export const getClient = (): OpenAI => {
 };
 
 export const buildContext = (chunks: { text: string }[]): string => {
-  if (chunks.length === 0) return 'No relevant context found.';
-  return chunks.map((chunk, i) => `Chunk ${i + 1}: ${chunk.text}`).join('\n\n');
+  if (chunks.length === 0) {
+    return 'No relevant context found';
+  }
+
+  return chunks
+    .map((chunk, index) => `Chunk ${index + 1}: ${chunk.text}`)
+    .join('\n\n');
 };
