@@ -66,12 +66,3 @@ export const deleteChat = (req: Request, res: Response): void => {
   // TODO: add error handling for deleteChat
   res.status(204).send();
 };
-
-export const messageChat = (req: Request, res: Response): void => {
-  // TODO: add error handling for messageChat
-  res.status(201).json({
-    success: true,
-    data: {},
-    error: null,
-  });
-};
