@@ -17,9 +17,11 @@ export const queryDocuments = async (req: Request, res: Response) => {
   }
 
   const userId = req.user!.userId;
+  // TODO: add error handling for document lookup
   const userDocs = await Document.find({ userId }, '_id');
   const docIds = userDocs.map((doc) => doc._id);
 
+  // TODO: add error handling for chunk lookup
   const chunkRecords = await Chunk.find({ documentId: { $in: docIds } });
   const chunks = chunkRecords.map((c) => ({
     id: String(c._id),
@@ -28,10 +30,12 @@ export const queryDocuments = async (req: Request, res: Response) => {
     embedding: c.embedding,
   }));
 
+  // TODO: add error handling for embedding creation
   const queryEmbedding = await createEmbedding(question);
   const ranked = rankBySimilarity(queryEmbedding, chunks, 5);
   const context = buildContext(ranked);
 
+  // TODO: add error handling for OpenAI request
   const response = await getClient().chat.completions.create({
     model: LLM_MODEL,
     messages: [

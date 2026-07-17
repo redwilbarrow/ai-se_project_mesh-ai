@@ -26,7 +26,7 @@ export const register = async (req: Request, res: Response) => {
       message = `${precedingFields}, and ${lastField} are required`;
     }
 
-    // TODO: consider trimming/validating whitespace-only values for name and email
+    // TODO: add validation for whitespace-only email/name
 
     return res.status(400).json({
       success: false,
@@ -113,7 +113,7 @@ export const login = async (req: Request, res: Response) => {
     });
   }
 
-  // TODO: add error handling
+  // TODO: add error handling for login lookup
   const user = await User.findOne({ email });
   if (!user) {
     return res.status(401).json({

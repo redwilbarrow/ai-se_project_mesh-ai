@@ -24,6 +24,7 @@ export const createMessage = async (
     return;
   }
 
+  // TODO: add error handling for chat lookup failures
   const chat = await Chat.findOne({ _id: chatId, userId });
 
   if (!chat) {
@@ -35,9 +36,10 @@ export const createMessage = async (
     return;
   }
 
-  // RAG pipeline — same as queryDocuments
+  // TODO: handle errors from document lookup
   const userDocs = await Document.find({ userId }, '_id');
   const docIds = userDocs.map((d) => d._id);
+  // TODO: handle errors from chunk lookup
   const chunkRecords = await Chunk.find({ documentId: { $in: docIds } });
   const chunks = chunkRecords.map((c) => ({
     id: String(c._id),
@@ -46,10 +48,12 @@ export const createMessage = async (
     embedding: c.embedding,
   }));
 
+  // TODO: validate and handle errors from the embedding service
   const queryEmbedding = await createEmbedding(question);
   const ranked = rankBySimilarity(queryEmbedding, chunks, 5);
   const context = buildContext(ranked);
 
+  // TODO: add OpenAI request error handling and retry logic
   const response = await getClient().chat.completions.create({
     model: LLM_MODEL,
     messages: [
@@ -69,6 +73,7 @@ export const createMessage = async (
   let answer = response.choices[0]!.message.content ?? 'No answer returned';
   answer = answer.replace(/<think>[\s\S]*?<\/think>\s*/g, '').trim();
 
+  // TODO: make message creation atomic so user and assistant messages are saved together
   const userMessage = await Message.create({
     chatId,
     role: 'user',

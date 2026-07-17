@@ -18,6 +18,7 @@ export const uploadDocument = async (req: Request, res: Response) => {
   // Parse the file
   const buffer = readFileSync(req.file.path);
   const parser = new PDFParse({ data: buffer });
+  // TODO: add error handling for PDF parsing
   const { text } = await parser.getText();
 
   // Chunk the text
@@ -27,8 +28,8 @@ export const uploadDocument = async (req: Request, res: Response) => {
   const title = req.body.title || req.file.originalname;
 
   // Create a Document document. See the models/document.ts
-  // TODO: Add try/catch around document upload and database create so DB failures return a proper error response instead of crashing.
-  // TODO: If the same user already uploaded a document with this fileName, return a "confirm replace" response instead of creating a duplicate. Later, support a replace flow where the client can confirm or cancel the upload.
+  // TODO: add error handling for upload and document creation
+  // TODO: handle duplicate document uploads later
   const document = await Document.create({
     title,
     fileName: req.file.originalname,
@@ -41,6 +42,7 @@ export const uploadDocument = async (req: Request, res: Response) => {
       Chunk.create({
         documentId: document._id,
         text: chunk,
+        // TODO: add error handling for embedding creation
         embedding: await createEmbedding(chunk),
       }),
     ),
@@ -57,7 +59,7 @@ export const uploadDocument = async (req: Request, res: Response) => {
 
 export const getDocuments = async (req: Request, res: Response) => {
   const userId = req.user!.userId;
-  // TODO: Add try/catch error handling around fetching documents.
+  // TODO: add error handling for document lookup
   const documents = await Document.find({ userId });
 
   res.status(200).json({

@@ -4,7 +4,7 @@ import Message from '../models/message.js';
 
 export const getChats = async (req: Request, res: Response) => {
   const userId = req.user!.userId;
-  // TODO: Add try/catch error handling around fetching chats.
+  // TODO: add error handling for chat lookup
   const chats = await Chat.find({ userId });
 
   res.status(200).json({
@@ -16,7 +16,7 @@ export const getChats = async (req: Request, res: Response) => {
 
 export const createChat = async (req: Request, res: Response) => {
   const { title } = req.body;
-  // TODO: Add try/catch error handling around chat creation.
+  // TODO: add error handling for chat creation
 
   if (!title) {
     return res.status(400).json({
@@ -40,7 +40,7 @@ export const createChat = async (req: Request, res: Response) => {
 
 export const getChat = async (req: Request, res: Response) => {
   const userId = req.user!.userId;
-  // TODO: Add try/catch error handling around fetching chat and messages.
+  // TODO: add error handling for chat and message lookup
   const chat = await Chat.findOne({ _id: req.params.id, userId });
 
   if (!chat) {
@@ -63,12 +63,12 @@ export const getChat = async (req: Request, res: Response) => {
 };
 
 export const deleteChat = (req: Request, res: Response): void => {
-  // TODO: Add error handling for deleteChat.
+  // TODO: add error handling for deleteChat
   res.status(204).send();
 };
 
 export const messageChat = (req: Request, res: Response): void => {
-  // TODO: Add error handling for messageChat.
+  // TODO: add error handling for messageChat
   res.status(201).json({
     success: true,
     data: {},
