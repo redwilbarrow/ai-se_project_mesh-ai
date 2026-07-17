@@ -1,25 +1,43 @@
 import type { Request, Response } from 'express';
-import Chunk from '../models/chunk.js';
+import Message from '../models/message.js';
+import Chat from '../models/chat.js';
 import Document from '../models/document.js';
+import Chunk from '../models/chunk.js';
 import { getClient, LLM_MODEL, buildContext } from '../utils/openai-client.js';
 import { createEmbedding } from '../utils/embeddings.js';
 import { rankBySimilarity } from '../utils/vector-search.js';
 
-export const queryDocuments = async (req: Request, res: Response) => {
+export const createMessage = async (
+  req: Request<{ id: string }>,
+  res: Response,
+): Promise<void> => {
   const { question } = req.body;
+  const chatId = req.params.id;
+  const userId = req.user!.userId;
 
   if (!question) {
-    return res.status(400).json({
+    res.status(400).json({
       success: false,
       data: null,
       error: { message: 'A question is required' },
     });
+    return;
   }
 
-  const userId = req.user!.userId;
-  const userDocs = await Document.find({ userId }, '_id');
-  const docIds = userDocs.map((doc) => doc._id);
+  const chat = await Chat.findOne({ _id: chatId, userId });
 
+  if (!chat) {
+    res.status(404).json({
+      success: false,
+      data: null,
+      error: { message: 'Chat not found' },
+    });
+    return;
+  }
+
+  // RAG pipeline — same as queryDocuments
+  const userDocs = await Document.find({ userId }, '_id');
+  const docIds = userDocs.map((d) => d._id);
   const chunkRecords = await Chunk.find({ documentId: { $in: docIds } });
   const chunks = chunkRecords.map((c) => ({
     id: String(c._id),
@@ -51,9 +69,21 @@ export const queryDocuments = async (req: Request, res: Response) => {
   let answer = response.choices[0]!.message.content ?? 'No answer returned';
   answer = answer.replace(/<think>[\s\S]*?<\/think>\s*/g, '').trim();
 
-  res.status(200).json({
+  const userMessage = await Message.create({
+    chatId,
+    role: 'user',
+    content: question,
+  });
+
+  const assistantMessage = await Message.create({
+    chatId,
+    role: 'assistant',
+    content: answer,
+  });
+
+  res.status(201).json({
     success: true,
-    data: { question, chunks: ranked, answer },
+    data: [userMessage, assistantMessage],
     error: null,
   });
 };
