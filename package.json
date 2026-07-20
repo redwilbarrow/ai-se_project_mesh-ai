@@ -1,7 +1,7 @@
 {
   "name": "ai-se_project_mesh-ai",
   "version": "1.0.0",
-  "part": "2",
+  "part": "1",
   "description": "Express-based AI document chat platform for querying uploaded PDFs",
   "homepage": "https://github.com/redwilbarrow/ai-se_project_mesh-ai#readme",
   "bugs": {
