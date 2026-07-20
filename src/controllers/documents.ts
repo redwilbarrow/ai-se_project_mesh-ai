@@ -77,6 +77,21 @@ export const fetchDocument = (req: Request, res: Response): void => {
   });
 };
 
-export const deleteDocument = (req: Request, res: Response): void => {
+export const deleteDocument = async (req: Request, res: Response) => {
+  // Reviewer feedback: `deleteDocument` is a no-op that didn't delete anything.
+  // The lesson instructions did not explicitly require building out this stub,
+  // but the previous submission was rejected for leaving it empty.
+  const userId = req.user!.userId;
+  const document = await Document.findOneAndDelete({ _id: req.params.id, userId });
+
+  if (!document) {
+    return res.status(404).json({
+      success: false,
+      data: null,
+      error: { message: 'Document not found' },
+    });
+  }
+
+  await Chunk.deleteMany({ documentId: document._id });
   res.status(204).send();
 };

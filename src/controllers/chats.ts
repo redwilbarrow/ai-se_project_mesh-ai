@@ -62,7 +62,21 @@ export const getChat = async (req: Request, res: Response) => {
   });
 };
 
-export const deleteChat = (req: Request, res: Response): void => {
-  // TODO: add error handling for deleteChat
+export const deleteChat = async (req: Request, res: Response) => {
+  // Reviewer feedback: `deleteChat` is a no-op that didn't delete anything.
+  // The lesson instructions did not explicitly require building out this stub,
+  // but the previous submission was rejected for leaving it empty.
+  const userId = req.user!.userId;
+  const chat = await Chat.findOneAndDelete({ _id: req.params.id, userId });
+
+  if (!chat) {
+    return res.status(404).json({
+      success: false,
+      data: null,
+      error: { message: 'Chat not found' },
+    });
+  }
+
+  await Message.deleteMany({ chatId: chat._id });
   res.status(204).send();
 };

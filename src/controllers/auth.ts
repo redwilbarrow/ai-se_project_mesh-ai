@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 
 import User from '../models/user.js';
 
-export const register = async (req: Request, res: Response) => {
+export const register = async (req: Request, res: Response): Promise<void> => {
   const { email, password, name } = req.body;
 
   const requiredFields = ['email', 'password', 'name'] as const;
@@ -43,19 +43,21 @@ export const register = async (req: Request, res: Response) => {
         ? 'Password must be at least 8 characters and cannot start or end with spaces'
         : 'Password cannot start or end with spaces';
 
-    return res.status(400).json({
+    res.status(400).json({
       success: false,
       data: null,
       error: { message },
     });
+    return;
   }
 
   if (trimmedPassword.length < 8) {
-    return res.status(400).json({
+    res.status(400).json({
       success: false,
       data: null,
       error: { message: 'Password must be at least 8 characters' },
     });
+    return;
   }
 
   try {
@@ -90,7 +92,7 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
 
   const requiredFields = ['email', 'password'] as const;
@@ -106,21 +108,23 @@ export const login = async (req: Request, res: Response) => {
       message = `${missingFields.join(' and ')} are required`;
     }
 
-    return res.status(400).json({
+    res.status(400).json({
       success: false,
       data: null,
       error: { message },
     });
+    return;
   }
 
   // TODO: add error handling for login lookup
   const user = await User.findOne({ email });
   if (!user) {
-    return res.status(401).json({
+    res.status(401).json({
       success: false,
       data: null,
       error: { message: 'Invalid credentials' },
     });
+    return;
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
@@ -146,14 +150,32 @@ export const login = async (req: Request, res: Response) => {
   });
 };
 
-export const getCurrentUser = (req: Request, res: Response): void => {
+// Lesson instructions only said to implement `register` and `login`,
+// but previous submission for Project 2 Part 2 was rejected for not
+// having implemented `getCurrentUser`. Not sure if I did this correctly.
+export const getCurrentUser = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const userId = req.user!.userId;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    res.status(404).json({
+      success: false,
+      data: null,
+      error: { message: 'User not found' },
+    });
+    return;
+  }
+
   res.status(200).json({
     success: true,
     data: {
-      userId: 'user_001',
-      email: 'user@example.com',
-      name: 'John Doe',
-      createdAt: '2026-01-01T00:00:00Z',
+      userId: user._id,
+      email: user.email,
+      name: user.name,
+      createdAt: user.createdAt,
     },
     error: null,
   });
