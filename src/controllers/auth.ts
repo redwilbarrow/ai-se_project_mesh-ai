@@ -28,11 +28,12 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     // TODO: add validation for whitespace-only email/name
 
-    return res.status(400).json({
+    res.status(400).json({
       success: false,
       data: null,
       error: { message },
     });
+    return;
   }
 
   const trimmedPassword = password.trim();
@@ -129,11 +130,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    return res.status(401).json({
+    res.status(401).json({
       success: false,
       data: null,
       error: { message: 'Invalid credentials' },
     });
+    return;
   }
 
   const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
