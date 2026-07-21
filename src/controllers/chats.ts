@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import Chat from '../models/chat.js';
 import Message from '../models/message.js';
 
-export const getChats = async (req: Request, res: Response) => {
+export const getChats = async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.userId;
   // TODO: add error handling for chat lookup
   const chats = await Chat.find({ userId });
@@ -14,16 +14,20 @@ export const getChats = async (req: Request, res: Response) => {
   });
 };
 
-export const createChat = async (req: Request, res: Response) => {
+export const createChat = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   const { title } = req.body;
   // TODO: add error handling for chat creation
 
   if (!title) {
-    return res.status(400).json({
+    res.status(400).json({
       success: false,
       data: null,
       error: { message: 'Title is required' },
     });
+    return;
   }
 
   const chat = await Chat.create({
@@ -38,17 +42,18 @@ export const createChat = async (req: Request, res: Response) => {
   });
 };
 
-export const getChat = async (req: Request, res: Response) => {
+export const getChat = async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.userId;
   // TODO: add error handling for chat and message lookup
   const chat = await Chat.findOne({ _id: req.params.id, userId });
 
   if (!chat) {
-    return res.status(404).json({
+    res.status(404).json({
       success: false,
       data: null,
       error: { message: 'Chat not found' },
     });
+    return;
   }
 
   const messages = await Message.find({ chatId: chat._id }).sort({
@@ -62,7 +67,10 @@ export const getChat = async (req: Request, res: Response) => {
   });
 };
 
-export const deleteChat = async (req: Request, res: Response) => {
+export const deleteChat = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   // Reviewer feedback: `deleteChat` is a no-op that didn't delete anything.
   // The lesson instructions did not explicitly require building out this stub,
   // but the previous submission was rejected for leaving it empty.
@@ -70,11 +78,12 @@ export const deleteChat = async (req: Request, res: Response) => {
   const chat = await Chat.findOneAndDelete({ _id: req.params.id, userId });
 
   if (!chat) {
-    return res.status(404).json({
+    res.status(404).json({
       success: false,
       data: null,
       error: { message: 'Chat not found' },
     });
+    return;
   }
 
   await Message.deleteMany({ chatId: chat._id });
