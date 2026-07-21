@@ -19,7 +19,7 @@ export const createMessage = async (
     res.status(400).json({
       success: false,
       data: null,
-      error: { message: 'A question is required' },
+      error: { message: 'question is required' },
     });
     return;
   }

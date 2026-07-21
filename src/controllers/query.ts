@@ -5,15 +5,19 @@ import { getClient, LLM_MODEL, buildContext } from '../utils/openai-client.js';
 import { createEmbedding } from '../utils/embeddings.js';
 import { rankBySimilarity } from '../utils/vector-search.js';
 
-export const queryDocuments = async (req: Request, res: Response) => {
+export const queryDocuments = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   const { question } = req.body;
 
   if (!question) {
-    return res.status(400).json({
+    res.status(400).json({
       success: false,
       data: null,
-      error: { message: 'A question is required' },
+      error: { message: 'question is required' },
     });
+    return;
   }
 
   const userId = req.user!.userId;
@@ -57,7 +61,7 @@ export const queryDocuments = async (req: Request, res: Response) => {
 
   res.status(200).json({
     success: true,
-    data: { question, chunks: ranked, answer },
+    data: { answer },
     error: null,
   });
 };

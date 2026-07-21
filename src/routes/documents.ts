@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
   uploadDocument,
   getDocuments,
-  fetchDocument,
+  getDocument,
   deleteDocument,
 } from '../controllers/documents.js';
 import { auth } from '../middleware/auth.js';
@@ -15,7 +15,7 @@ const documentsRouter = Router();
 // TODO: update upload route to support duplicate-file replacement flow, e.g. accept a confirm flag or add a separate "replace document" endpoint.
 documentsRouter.post('/', auth, upload.single('file'), uploadDocument);
 documentsRouter.get('/', auth, getDocuments);
-documentsRouter.get('/:id', auth, fetchDocument);
+documentsRouter.get('/:id', auth, getDocument);
 documentsRouter.delete('/:id', auth, deleteDocument);
 
 export { documentsRouter };

@@ -5,7 +5,6 @@ const chatSchema = new mongoose.Schema({
     type: String,
     trim: true,
     required: [true, 'Chat title cannot be blank'],
-    default: 'New Chat',
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
