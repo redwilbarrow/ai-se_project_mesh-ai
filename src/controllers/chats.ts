@@ -25,7 +25,7 @@ export const createChat = async (
     res.status(400).json({
       success: false,
       data: null,
-      error: { message: 'Title is required' },
+      error: { message: 'title is required' },
     });
     return;
   }

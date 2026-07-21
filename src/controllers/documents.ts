@@ -14,7 +14,7 @@ export const uploadDocument = async (
     res.status(400).json({
       success: false,
       data: null,
-      error: { message: 'File is required' },
+      error: { message: 'file is required' },
     });
     return;
   }
