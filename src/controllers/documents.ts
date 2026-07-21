@@ -77,10 +77,25 @@ export const getDocuments = async (
   });
 };
 
-export const fetchDocument = (req: Request, res: Response): void => {
+export const getDocument = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const userId = req.user!.userId;
+  const document = await Document.findOne({ _id: req.params.id, userId });
+
+  if (!document) {
+    res.status(404).json({
+      success: false,
+      data: null,
+      error: { message: 'Document not found' },
+    });
+    return;
+  }
+
   res.status(200).json({
     success: true,
-    data: {},
+    data: document,
     error: null,
   });
 };
