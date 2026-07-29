@@ -16,7 +16,16 @@ dist
 .vscode
 copilot-instructions.md
 /specs
-/uploads
+/server/uploads
 
 # Secrets
 .env
+.env.local
+.env.*
+!/server/.env.example
+
+# Test and build artifacts
+coverage/
+.nyc_output/
+.eslintcache
+*.tsbuildinfo
