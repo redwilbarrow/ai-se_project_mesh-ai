@@ -1,3 +1,11 @@
 .app {
+  min-height: 100vh;
+  padding: 34px 20px 0;
   font-family: "Work Sans", Arial, Helvetica, sans-serif;
+}
+
+.app__page {
+  width: 100%;
+  max-width: 670px;
+  margin: 0 auto;
 }

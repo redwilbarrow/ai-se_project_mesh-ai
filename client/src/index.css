@@ -44,7 +44,12 @@ input[type="radio"] {
   cursor: pointer;
 }
 
-/* :root {
+/* I kept the following and commented it out because I plan to 
+build this project out further and like the idea of having a 
+centralized place for managing major UI design themes and plan 
+to use this as a template or reference.
+
+:root {
   --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;

@@ -2,21 +2,36 @@
 logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Generated files
+# Dependencies and build outputs
 node_modules
 dist
+dist-ssr
+*.local
+.vite
 
-# Optional npm cache directory
-.npm
-
-# System files and IDE settings folders
-.DS_Store
+# Editor directories and files
+.vscode/
+!.vscode/extensions.json
 .idea
-.vscode
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Project-specific generated / local files
 copilot-instructions.md
 /specs
 /server/uploads
+
+# Optional npm cache directory
+.npm
 
 # Secrets
 .env

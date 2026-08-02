@@ -43,8 +43,8 @@
   display: none;
 }
 
-@media (max-width: 394px) {
-  .upload-area__label span {
+@media (max-width: 768px) {
+  .upload-area__hint {
     display: none;
   }
 }
