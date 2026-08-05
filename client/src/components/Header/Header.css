@@ -35,11 +35,16 @@
   border-radius: 4px;
 }
 
+.header__nav-link:hover {
+  background-color: #9679d91a;
+}
+
 .header__nav-link_active {
   background-color: #9679d933;
   opacity: 100%;
 }
 
-.header__nav-link:hover {
-  background-color: #9679d91a;
+.header__nav-link_active:hover {
+  background-color: #9679d933;
+  opacity: 100%;
 }
