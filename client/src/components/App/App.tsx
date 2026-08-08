@@ -16,13 +16,7 @@ function App() {
           </div>
         }
       ></Route>
-      <Route
-        element={
-          <div className="app">
-            <AppLayout />
-          </div>
-        }
-      >
+      <Route element={<AppLayout />}>
         <Route path="/knowledge" element={<KnowledgeBase />} />
         <Route path="/chat" element={<Chat />} />
       </Route>
