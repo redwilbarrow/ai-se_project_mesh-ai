@@ -8,8 +8,21 @@ import AppLayout from "../AppLayout/AppLayout";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Intro />}></Route>
-      <Route element={<AppLayout />}>
+      <Route
+        path="/"
+        element={
+          <div className="app">
+            <Intro />
+          </div>
+        }
+      ></Route>
+      <Route
+        element={
+          <div className="app">
+            <AppLayout />
+          </div>
+        }
+      >
         <Route path="/knowledge" element={<KnowledgeBase />} />
         <Route path="/chat" element={<Chat />} />
       </Route>

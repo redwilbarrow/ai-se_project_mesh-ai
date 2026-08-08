@@ -1,0 +1,40 @@
+.intro-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  aspect-ratio: 105/118;
+  padding: 18px 12px;
+  border-radius: 16px;
+  background-color: #f6f3ff;
+}
+
+.intro-card__image {
+  width: 106px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.intro-card__text {
+  font-family: "Work Sans", Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.2;
+  letter-spacing: 0;
+  vertical-align: bottom;
+}
+
+@media screen and (max-width: 710px) {
+  .intro-card {
+    display: grid;
+    grid-template-columns: 106px minmax(0, 1fr);
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+    height: 142px;
+  }
+
+  .intro-card__image {
+    width: 106px;
+  }
+}

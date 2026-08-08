@@ -1,11 +1,8 @@
 .app-layout {
   min-height: 100vh;
-  padding: 10px 20px;
   font-family: "Work Sans", Arial, Helvetica, sans-serif;
 }
 
 .app-layout__main {
   width: 100%;
-  max-width: 670px;
-  margin: 0 auto;
 }
