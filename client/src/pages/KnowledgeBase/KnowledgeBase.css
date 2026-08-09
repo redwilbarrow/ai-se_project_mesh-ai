@@ -122,7 +122,7 @@
     #1c1c1c;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 769px) {
   .knowledge-base__documents-list {
     margin-top: 20px;
   }
