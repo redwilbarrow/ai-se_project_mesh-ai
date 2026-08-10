@@ -1,7 +1,26 @@
 import "./Chat.css";
+import plusIcon from "../../assets/images/plus-icon.svg";
+import sendIcon from "../../assets/images/send-icon.svg";
+import errorIcon from "../../assets/images/error-icon.png";
 import { useState, useEffect } from "react";
-import { getChats, createChat } from "../../utils/api";
+import ReactMarkdown from "react-markdown";
+import { getChats, getChat, createChat } from "../../utils/api";
 import type { Chat as ChatType } from "../../utils/api";
+import type { Message } from "../../utils/api";
+
+const formatMessageTime = (createdAt: string): string => {
+  return new Date(createdAt)
+    .toLocaleString("en-US", {
+      month: "numeric",
+      day: "numeric",
+      year: "2-digit",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    })
+    .replace(",", "")
+    .toLowerCase();
+};
 
 export default function Chat() {
   const [chats, setChats] = useState<ChatType[]>([]);
@@ -10,6 +29,10 @@ export default function Chat() {
   const [isLoadingChats, setIsLoadingChats] = useState(true);
   const [isCreatingChat, setIsCreatingChat] = useState(false);
   const [newChatTitle, setNewChatTitle] = useState("");
+
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [messagesError, setMessagesError] = useState("");
 
   useEffect(() => {
     const load = async () => {
@@ -26,5 +49,209 @@ export default function Chat() {
     load();
   }, []);
 
-  return <div>Chat</div>;
+  useEffect(() => {
+    if (!activeChatId) return;
+
+    const load = async () => {
+      setMessages([]);
+      setMessagesError("");
+      setIsLoadingMessages(true);
+      try {
+        const res = await getChat(activeChatId);
+        setMessages(res.data?.messages || []);
+      } catch {
+        setMessagesError("Failed to load chat.");
+      } finally {
+        setIsLoadingMessages(false);
+      }
+    };
+
+    load();
+  }, [activeChatId]);
+
+  const handleCreateChat = async () => {
+    const title = newChatTitle.trim() || "New Chat";
+
+    setIsCreatingChat(false);
+    setNewChatTitle("");
+
+    try {
+      const res = await createChat(title);
+      if (res.data) {
+        setChats((prevChats) => [res.data!, ...prevChats]);
+        setActiveChatId(res.data._id);
+      }
+    } catch {
+      // A toast or inline error could go here in the future
+    }
+  };
+
+  console.log(messages);
+
+  return (
+    <div className="chat">
+      <aside className="chat__sidebar">
+        <button
+          className="chat__new-btn"
+          type="button"
+          onClick={() => {
+            setIsCreatingChat(true);
+          }}
+        >
+          <img
+            src={plusIcon}
+            alt=""
+            aria-hidden="true"
+            className="chat__new-btn-icon"
+          />
+          <span>New Chat</span>
+        </button>
+
+        {isCreatingChat && (
+          <input
+            className="chat__title-input"
+            type="text"
+            placeholder="Chat name"
+            value={newChatTitle}
+            onChange={(e) => setNewChatTitle(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleCreateChat();
+              if (e.key === "Escape") {
+                setIsCreatingChat(false);
+                setNewChatTitle("");
+              }
+            }}
+            autoFocus
+          />
+        )}
+        {isLoadingChats && <p className="chat__sidebar-message">Loading…</p>}
+        {chatsError && <p className="chat__sidebar-message">{chatsError}</p>}
+
+        <ul className="chat__chats-list">
+          {chats.map((c) => (
+            <li
+              key={c._id}
+              className={
+                c._id === activeChatId
+                  ? "chat__chat-item chat__chat-item_active"
+                  : "chat__chat-item"
+              }
+              onClick={() => setActiveChatId(c._id)}
+            >
+              {c.title}
+            </li>
+          ))}
+        </ul>
+      </aside>
+
+      <div className="chat__main">
+        {!messagesError && !isLoadingMessages && !activeChatId && (
+          <div className="chat__no-messages">
+            <h1 className="chat__main-title">
+              Create a new chat or select an existing chat to start the
+              conversation
+            </h1>
+            <button
+              type="button"
+              className="chat__std-btn"
+              onClick={() => {
+                setIsCreatingChat(true);
+              }}
+            >
+              Start New Chat
+            </button>
+          </div>
+        )}
+
+        {!messagesError &&
+          !isLoadingMessages &&
+          activeChatId &&
+          messages.length === 0 && (
+            <div className="chat__no-messages">
+              <h1 className="chat__main-title">
+                Ask a question below{" "}
+                <span className="chat__main-title_break">
+                  to start the conversation
+                </span>
+              </h1>
+            </div>
+          )}
+
+        {activeChatId && isLoadingMessages && (
+          <p className="chat__no-messages">Loading...</p>
+        )}
+
+        {activeChatId && messagesError && (
+          <div className="chat__error">
+            <img
+              src={errorIcon}
+              alt=""
+              aria-hidden="true"
+              className="chat__error-icon"
+            />
+            <div className="chat__error-text">
+              <h1 className="chat__main-title chat__main-title_error">
+                Looks like something went wrong
+              </h1>
+              <p className="chat__error-p">
+                Try reloading the page or creating the chat again
+              </p>
+              <button type="button" className="chat__std-btn">
+                Go to the Main Page
+              </button>
+            </div>
+          </div>
+        )}
+
+        {activeChatId && !isLoadingMessages && !messagesError && (
+          <div className="chat__conversation">
+            <ul className="chat__messages">
+              {messages.map((msg) => (
+                <li
+                  key={msg._id}
+                  className={
+                    msg.role === "user"
+                      ? "chat__message chat__message_user"
+                      : "chat__message chat__message_assistant"
+                  }
+                >
+                  <div className="chat__message-content">
+                    <div className="chat__message-text">
+                      {msg.role === "assistant" ? (
+                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                      ) : (
+                        msg.content
+                      )}
+                    </div>
+                  </div>
+                  <div className="chat__message-meta">
+                    <time
+                      dateTime={msg.createdAt}
+                      className="chat__message-time"
+                    >
+                      {formatMessageTime(msg.createdAt)}
+                    </time>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <div className="chat__input-container">
+              <textarea
+                className="chat__textarea"
+                placeholder="Ask any question"
+              />
+              <button className="chat__input-send">
+                <img
+                  src={sendIcon}
+                  alt="Send"
+                  className="chat__send-icon"
+                  aria-label="Send Message"
+                />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
