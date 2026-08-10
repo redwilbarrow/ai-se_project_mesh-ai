@@ -4,7 +4,7 @@
   align-items: flex-start;
   width: 100%;
   max-width: 670px;
-  margin: 12px auto;
+  margin: 34px auto;
   gap: 32px;
 }
 
@@ -25,7 +25,6 @@
 }
 
 .knowledge-base__description {
-  font-family: "Work Sans", Arial, Helvetica, sans-serif;
   font-weight: 400;
   font-size: 18px;
   line-height: 1.25;
@@ -47,7 +46,6 @@
   height: 44px;
   border-radius: 8px;
   gap: 10px;
-  font-family: "Work Sans", Arial, Helvetica, sans-serif;
   font-weight: 400;
   font-size: 14px;
   line-height: 1.2;
@@ -81,7 +79,6 @@
 }
 
 .knowledge-base__status {
-  font-family: "Work Sans", Arial, Helvetica, sans-serif;
   font-weight: 400;
   font-size: 18px;
   line-height: 1;
@@ -104,7 +101,6 @@
   padding: 16px;
   height: 44px;
   border-radius: 8px;
-  font-family: "Work Sans", Arial, Helvetica, sans-serif;
   font-weight: 500;
   font-size: 18px;
   line-height: 1;
