@@ -1,6 +1,4 @@
 import "./Chat.css";
-import plusIcon from "../../assets/images/plus-icon.svg";
-import sendIcon from "../../assets/images/send-icon.svg";
 import errorIcon from "../../assets/images/error-icon.png";
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
@@ -98,13 +96,7 @@ export default function Chat() {
             setIsCreatingChat(true);
           }}
         >
-          <img
-            src={plusIcon}
-            alt=""
-            aria-hidden="true"
-            className="chat__new-btn-icon"
-          />
-          <span>New Chat</span>
+          New Chat
         </button>
 
         {isCreatingChat && (
@@ -127,21 +119,23 @@ export default function Chat() {
         {isLoadingChats && <p className="chat__sidebar-message">Loading…</p>}
         {chatsError && <p className="chat__sidebar-message">{chatsError}</p>}
 
-        <ul className="chat__chats-list">
-          {chats.map((c) => (
-            <li
-              key={c._id}
-              className={
-                c._id === activeChatId
-                  ? "chat__chat-item chat__chat-item_active"
-                  : "chat__chat-item"
-              }
-              onClick={() => setActiveChatId(c._id)}
-            >
-              {c.title}
-            </li>
-          ))}
-        </ul>
+        <div className="chat__chats-scroll">
+          <ul className="chat__chats-list">
+            {chats.map((c) => (
+              <li
+                key={c._id}
+                className={
+                  c._id === activeChatId
+                    ? "chat__chat-item chat__chat-item_active"
+                    : "chat__chat-item"
+                }
+                onClick={() => setActiveChatId(c._id)}
+              >
+                {c.title}
+              </li>
+            ))}
+          </ul>
+        </div>
       </aside>
 
       <div className="chat__main">
@@ -235,19 +229,12 @@ export default function Chat() {
                 </li>
               ))}
             </ul>
-            <div className="chat__input-container">
+            <div className="chat__input-bar">
               <textarea
-                className="chat__textarea"
+                className="chat__input"
                 placeholder="Ask any question"
               />
-              <button className="chat__input-send">
-                <img
-                  src={sendIcon}
-                  alt="Send"
-                  className="chat__send-icon"
-                  aria-label="Send Message"
-                />
-              </button>
+              <button className="chat__send" aria-label="Send Message"></button>
             </div>
           </div>
         )}

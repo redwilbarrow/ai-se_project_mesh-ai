@@ -1,4 +1,6 @@
 .app-layout {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   font-family: "Work Sans", Arial, Helvetica, sans-serif;
 }
@@ -6,5 +8,4 @@
 .app-layout__main {
   flex: 1;
   width: 100%;
-  padding: 0 20px;
 }
