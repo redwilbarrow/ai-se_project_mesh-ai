@@ -289,10 +289,11 @@ export default function Chat() {
             <div className="chat__input-bar">
               <textarea
                 className="chat__input"
-                placeholder="Ask any question"
+                placeholder={isSending ? "Loading..." : "Ask any question"}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 disabled={isSending}
+                onKeyDown={handleKeyDown}
               />
               <button
                 className={
