@@ -2,7 +2,7 @@ import "./Chat.css";
 import errorIcon from "../../assets/images/error-icon.png";
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import { getChats, getChat, createChat } from "../../utils/api";
+import { getChats, getChat, createChat, sendMessage } from "../../utils/api";
 import type { Chat as ChatType } from "../../utils/api";
 import type { Message } from "../../utils/api";
 
@@ -31,6 +31,9 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [messagesError, setMessagesError] = useState("");
+
+  const [input, setInput] = useState("");
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -84,7 +87,47 @@ export default function Chat() {
     }
   };
 
-  console.log(messages);
+  const handleSend = async () => {
+    const text = input.trim();
+    if (!text || !activeChatId || isSending) return;
+
+    const userMessage: Message = {
+      _id: Date.now().toString(),
+      chatId: activeChatId,
+      role: "user",
+      content: text,
+      createdAt: new Date().toISOString(),
+    };
+
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
+    setInput("");
+    setIsSending(true);
+
+    try {
+      const res = await sendMessage(activeChatId, text);
+      if (res.data) {
+        setMessages((prev) => [...prev, res.data!]);
+      }
+    } catch {
+      const errorMessage: Message = {
+        _id: Date.now().toString(),
+        chatId: activeChatId,
+        role: "assistant",
+        content: "Something went wrong. Please try again.",
+        createdAt: new Date().toISOString(),
+      };
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
 
   return (
     <div className="chat">
@@ -114,6 +157,10 @@ export default function Chat() {
               }
             }}
             autoFocus
+            onBlur={() => {
+              setIsCreatingChat(false);
+              setNewChatTitle("");
+            }}
           />
         )}
         {isLoadingChats && <p className="chat__sidebar-message">Loading…</p>}
@@ -233,8 +280,18 @@ export default function Chat() {
               <textarea
                 className="chat__input"
                 placeholder="Ask any question"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                disabled={isSending}
               />
-              <button className="chat__send" aria-label="Send Message"></button>
+              <button
+                className={
+                  isSending ? "chat__send chat__send_sending" : "chat__send"
+                }
+                aria-label="Send Message"
+                onClick={handleSend}
+                disabled={isSending || !input.trim()}
+              ></button>
             </div>
           </div>
         )}

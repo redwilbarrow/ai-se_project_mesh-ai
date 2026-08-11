@@ -1,11 +1,14 @@
 .app-layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   font-family: "Work Sans", Arial, Helvetica, sans-serif;
 }
 
 .app-layout__main {
   flex: 1;
+  min-height: 0;
   width: 100%;
+  overflow: hidden;
 }
