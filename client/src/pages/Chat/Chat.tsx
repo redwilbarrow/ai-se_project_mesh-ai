@@ -1,6 +1,6 @@
 import "./Chat.css";
 import errorIcon from "../../assets/images/error-icon.png";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { getChats, getChat, createChat, sendMessage } from "../../utils/api";
 import type { Chat as ChatType } from "../../utils/api";
@@ -34,6 +34,8 @@ export default function Chat() {
 
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
+
+  const messagesRef = useRef<HTMLUListElement | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -69,6 +71,14 @@ export default function Chat() {
 
     load();
   }, [activeChatId]);
+
+  useLayoutEffect(() => {
+    const messagesElement = messagesRef.current;
+
+    if (!messagesElement) return;
+
+    messagesElement.scrollTop = messagesElement.scrollHeight;
+  }, [messages]);
 
   const handleCreateChat = async () => {
     const title = newChatTitle.trim() || "New Chat";
@@ -246,7 +256,7 @@ export default function Chat() {
 
         {activeChatId && !isLoadingMessages && !messagesError && (
           <div className="chat__conversation">
-            <ul className="chat__messages">
+            <ul ref={messagesRef} className="chat__messages">
               {messages.map((msg) => (
                 <li
                   key={msg._id}
