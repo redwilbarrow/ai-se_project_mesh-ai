@@ -1,7 +1,7 @@
 import "./Chat.css";
 import errorIcon from "../../assets/images/error-icon.png";
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { getChats, getChat, createChat, sendMessage } from "../../utils/api";
 import type { Chat as ChatType } from "../../utils/api";
@@ -42,6 +42,8 @@ export default function Chat() {
   const [isSending, setIsSending] = useState(false);
 
   const messagesRef = useRef<HTMLUListElement | null>(null);
+
+  const navigate = useNavigate();
 
   const { isMobileMenuOpen, setIsMobileMenuOpen } =
     useOutletContext<MobileContext>();
@@ -251,7 +253,16 @@ export default function Chat() {
               <p className="chat__error-p">
                 Try reloading the page or creating the chat again
               </p>
-              <button type="button" className="chat__std-btn">
+              <button
+                type="button"
+                className="chat__std-btn"
+                onClick={() => {
+                  setMessagesError("");
+                  setMessages([]);
+                  setActiveChatId(null);
+                  navigate("/chat");
+                }}
+              >
                 Go to the Main Page
               </button>
             </div>

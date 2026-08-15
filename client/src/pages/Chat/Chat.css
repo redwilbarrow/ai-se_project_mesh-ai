@@ -250,6 +250,11 @@
   border-radius: 12px;
 }
 
+.chat__message_user .chat__message-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 .chat__message_user .chat__message-content {
   background-color: #1c1c1c0d;
 }
