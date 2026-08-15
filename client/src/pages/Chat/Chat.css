@@ -128,9 +128,17 @@
   letter-spacing: 0;
 }
 
+.chat__main-title_desktop {
+  display: block;
+}
+
 .chat__main-title_break {
   display: block;
   margin-bottom: 32px;
+}
+
+.chat__main-title_mobile {
+  display: none;
 }
 
 .chat__std-btn {
@@ -407,7 +415,27 @@
     transform: translateX(0);
   }
 
+  .chat__conversation > .chat__no-messages {
+    flex: 1;
+    padding-top: 0;
+    justify-content: center;
+  }
+
   .chat__input-bar {
     margin: 16.5px 0 2.5px;
+  }
+}
+
+@media (max-width: 440px) {
+  .chat__main-title_desktop {
+    display: none;
+  }
+
+  .chat__main-title_mobile {
+    display: block;
+  }
+
+  .chat__main-title_mobile > span {
+    display: block;
   }
 }

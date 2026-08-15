@@ -232,20 +232,6 @@ export default function Chat() {
           </div>
         )}
 
-        {!messagesError &&
-          !isLoadingMessages &&
-          activeChatId &&
-          messages.length === 0 && (
-            <div className="chat__no-messages">
-              <h1 className="chat__main-title">
-                Ask a question below{" "}
-                <span className="chat__main-title_break">
-                  to start the conversation
-                </span>
-              </h1>
-            </div>
-          )}
-
         {activeChatId && isLoadingMessages && (
           <p className="chat__no-messages">Loading...</p>
         )}
@@ -274,36 +260,59 @@ export default function Chat() {
 
         {activeChatId && !isLoadingMessages && !messagesError && (
           <div className="chat__conversation">
-            <ul ref={messagesRef} className="chat__messages">
-              {messages.map((msg) => (
-                <li
-                  key={msg._id}
-                  className={
-                    msg.role === "user"
-                      ? "chat__message chat__message_user"
-                      : "chat__message chat__message_assistant"
-                  }
+            {messages.length === 0 ? (
+              <div className="chat__no-messages">
+                <h1
+                  className="chat__main-title"
+                  aria-label="Ask a question below to start the conversation"
                 >
-                  <div className="chat__message-content">
-                    <div className="chat__message-text">
-                      {msg.role === "assistant" ? (
-                        <ReactMarkdown>{msg.content}</ReactMarkdown>
-                      ) : (
-                        msg.content
-                      )}
+                  <span className="chat__main-title_desktop" aria-hidden="true">
+                    Ask a question below{" "}
+                    <span className="chat__main-title_break">
+                      to start the conversation
+                    </span>
+                  </span>
+
+                  <span className="chat__main-title_mobile" aria-hidden="true">
+                    <span>Ask a question</span>
+                    <span>below to start</span>
+                    <span>the conversation</span>
+                  </span>
+                </h1>
+              </div>
+            ) : (
+              <ul ref={messagesRef} className="chat__messages">
+                {messages.map((msg) => (
+                  <li
+                    key={msg._id}
+                    className={
+                      msg.role === "user"
+                        ? "chat__message chat__message_user"
+                        : "chat__message chat__message_assistant"
+                    }
+                  >
+                    <div className="chat__message-content">
+                      <div className="chat__message-text">
+                        {msg.role === "assistant" ? (
+                          <ReactMarkdown>{msg.content}</ReactMarkdown>
+                        ) : (
+                          msg.content
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="chat__message-meta">
-                    <time
-                      dateTime={msg.createdAt}
-                      className="chat__message-time"
-                    >
-                      {formatMessageTime(msg.createdAt)}
-                    </time>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                    <div className="chat__message-meta">
+                      <time
+                        dateTime={msg.createdAt}
+                        className="chat__message-time"
+                      >
+                        {formatMessageTime(msg.createdAt)}
+                      </time>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+
             <div className="chat__input-bar">
               <textarea
                 className="chat__input"
@@ -320,7 +329,7 @@ export default function Chat() {
                 aria-label="Send Message"
                 onClick={handleSend}
                 disabled={isSending || !input.trim()}
-              ></button>
+              />
             </div>
           </div>
         )}
