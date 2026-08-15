@@ -10,6 +10,12 @@ export default function KnowledgeBase() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const handleDeleteDocument = (documentId: string) => {
+    setDocuments((prevDocuments) =>
+      prevDocuments.filter((document) => document._id !== documentId),
+    );
+  };
+
   const handleFileSelect = (file: File) => {
     const newDoc: KnowledgeDoc = {
       _id: Date.now().toString(),
@@ -60,6 +66,7 @@ export default function KnowledgeBase() {
                   type="button"
                   className="knowledge-base__delete-document-btn"
                   aria-label={`Delete ${document.fileName}`}
+                  onClick={() => handleDeleteDocument(document._id)}
                 >
                   <img
                     src={deleteIcon}
