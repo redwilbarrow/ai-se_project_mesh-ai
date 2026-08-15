@@ -1,10 +1,16 @@
 import "./Chat.css";
 import errorIcon from "../../assets/images/error-icon.png";
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useOutletContext } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { getChats, getChat, createChat, sendMessage } from "../../utils/api";
 import type { Chat as ChatType } from "../../utils/api";
 import type { Message } from "../../utils/api";
+
+type MobileContext = {
+  isMobileMenuOpen: boolean;
+  setIsMobileMenuOpen: (open: boolean) => void;
+};
 
 const formatMessageTime = (createdAt: string): string => {
   return new Date(createdAt)
@@ -36,6 +42,9 @@ export default function Chat() {
   const [isSending, setIsSending] = useState(false);
 
   const messagesRef = useRef<HTMLUListElement | null>(null);
+
+  const { isMobileMenuOpen, setIsMobileMenuOpen } =
+    useOutletContext<MobileContext>();
 
   useEffect(() => {
     const load = async () => {
@@ -91,6 +100,7 @@ export default function Chat() {
       if (res.data) {
         setChats((prevChats) => [res.data!, ...prevChats]);
         setActiveChatId(res.data._id);
+        setIsMobileMenuOpen(false);
       }
     } catch {
       // A toast or inline error could go here in the future
@@ -139,9 +149,13 @@ export default function Chat() {
     }
   };
 
+  console.log(isMobileMenuOpen);
+
   return (
     <div className="chat">
-      <aside className="chat__sidebar">
+      <aside
+        className={`chat__sidebar${isMobileMenuOpen ? " chat__sidebar_open" : ""}`}
+      >
         <button
           className="chat__new-btn"
           type="button"
@@ -186,7 +200,10 @@ export default function Chat() {
                     ? "chat__chat-item chat__chat-item_active"
                     : "chat__chat-item"
                 }
-                onClick={() => setActiveChatId(c._id)}
+                onClick={() => {
+                  setActiveChatId(c._id);
+                  setIsMobileMenuOpen(false);
+                }}
               >
                 {c.title}
               </li>
@@ -207,6 +224,7 @@ export default function Chat() {
               className="chat__std-btn"
               onClick={() => {
                 setIsCreatingChat(true);
+                setIsMobileMenuOpen(true);
               }}
             >
               Start New Chat

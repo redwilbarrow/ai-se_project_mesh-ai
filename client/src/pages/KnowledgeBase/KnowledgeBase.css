@@ -118,7 +118,7 @@
     #1c1c1c;
 }
 
-@media (max-width: 769px) {
+@media (max-width: 1200px) {
   .knowledge-base__documents-list {
     margin-top: 20px;
   }
@@ -126,5 +126,11 @@
   .knowledge-base__save-btn {
     align-self: stretch;
     height: 52px;
+  }
+}
+
+@media (max-width: 710px) {
+  .knowledge-base {
+    padding-inline: 20px;
   }
 }

@@ -50,3 +50,52 @@
   background-color: #9679d933;
   opacity: 100%;
 }
+
+.header__menu-btn {
+  display: none;
+  width: 24px;
+  height: 24px;
+  background-image: url("../../assets/images/menu-icon.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+@media (max-width: 1200px) {
+  .header {
+    justify-content: flex-start;
+    border-bottom: 1px solid rgb(0 0 0 / 0.1);
+  }
+
+  .header__menu-btn {
+    display: block;
+  }
+
+  .header__logo {
+    margin-left: auto;
+  }
+
+  .header__nav {
+    position: fixed;
+    top: 47px;
+    bottom: 0;
+    left: 0;
+    width: 75%;
+    max-width: 255px;
+    flex-direction: column;
+    align-items: flex-start;
+    z-index: 101;
+    display: none;
+    border-top: 1px solid rgb(0 0 0 / 0.1);
+    background-color: #fff;
+    justify-content: end;
+  }
+
+  .header__nav_mobile {
+    display: flex;
+    padding: 7.5px 0 77.5px;
+  }
+
+  .header__nav-link {
+    width: 100%;
+  }
+}

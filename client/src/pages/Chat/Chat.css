@@ -5,7 +5,7 @@
   min-height: 0;
   overflow: hidden;
   box-sizing: border-box;
-  padding: 22px 0;
+  padding: 22px 20px;
 }
 
 .chat__sidebar {
@@ -383,4 +383,31 @@
   background: rgb(0 0 0 / 0.06);
   padding: 2px 5px;
   border-radius: 4px;
+}
+
+@media (max-width: 1200px) {
+  .chat__sidebar {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    bottom: 0;
+    width: 75%;
+    height: 70%;
+    max-width: 255px;
+    z-index: 102;
+    background: #fff;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chat__sidebar_open {
+    transform: translateX(0);
+  }
+
+  .chat__input-bar {
+    margin: 16.5px 0 2.5px;
+  }
 }
