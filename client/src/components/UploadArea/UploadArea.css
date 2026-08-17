@@ -22,16 +22,19 @@
   text-decoration: none;
 }
 
-.upload-area__label svg {
+.upload-area__upload-icon {
+  height: 24px;
+  width: 24px;
   margin: 0 auto 8px;
+  opacity: 0.5;
 }
 
 .upload-area__label:hover {
   color: rgba(28, 28, 28);
 }
 
-.upload-area__label:hover svg path {
-  stroke-opacity: 1;
+.upload-area__label:hover img {
+  opacity: 1;
 }
 
 .upload-area__label .underline {
