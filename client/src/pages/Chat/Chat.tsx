@@ -130,8 +130,8 @@ export default function Chat() {
 
       if (res.data) {
         setMessages((prev) => [
-          ...prev.filter((message) => message._id !== userMessage._id),
-          ...res.data,
+          ...prev.filter((m) => m._id !== userMessage._id),
+          ...res.data!,
         ]);
       }
     } catch {
