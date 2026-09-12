@@ -1,33 +1,47 @@
+import type {
+  CurrentUser,
+  Message,
+  KnowledgeDoc,
+  Chat,
+  ApiResponse,
+} from "../types";
+
+const BASE_URL = "/api";
+
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
-export type KnowledgeDoc = {
-  _id: string;
-  title: string;
-  fileName: string;
-  userId: string;
-  createdAt: string;
-};
+async function request<T>(
+  path: string,
+  options: RequestInit = {},
+): Promise<ApiResponse<T>> {
+  const token = localStorage.getItem("auth-token") ?? "";
 
-export type Chat = {
-  _id: string;
-  title: string;
-  userId: string;
-  createdAt: string;
-};
+  const res = await fetch(path, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      ...options.headers,
+    },
+  });
 
-export type Message = {
-  _id: string;
-  chatId: string;
-  role: "user" | "assistant";
-  content: string;
-  createdAt: string;
-};
+  if (res.status === 401) {
+    const body = await res.json().catch(() => null);
+    const message = body?.error?.message || "Invalid credentials";
+    if (localStorage.getItem("auth-token")) {
+      localStorage.removeItem("auth-token");
+      window.location.href = "/login";
+    }
+    throw new Error(message);
+  }
 
-export type ApiResponse<T> = {
-  success: boolean;
-  data: T | null;
-  error: { message: string } | null;
-};
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.error?.message || "Request failed");
+  }
+
+  return res.json();
+}
 
 export const getDocuments = async (): Promise<ApiResponse<KnowledgeDoc[]>> => {
   await delay(700);
@@ -215,6 +229,21 @@ export const getChat = async (
     },
     error: null,
   };
+};
+
+export const getCurrentUser = async (): Promise<CurrentUser> => {
+  const response = await fetch("/api/users/me", {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("auth-token")}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Unable to fetch current user");
+  }
+
+  const result = await response.json();
+  return result.data;
 };
 
 export const createChat = async (title: string): Promise<ApiResponse<Chat>> => {
