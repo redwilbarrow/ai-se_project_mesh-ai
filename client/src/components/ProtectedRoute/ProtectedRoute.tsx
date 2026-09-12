@@ -1,16 +1,25 @@
-import { Navigate, Outlet, useOutletContext } from "react-router-dom";
+import {
+  Navigate,
+  Outlet,
+  useLocation,
+  useOutletContext,
+} from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 
 export function ProtectedRoute() {
   const { isAuthenticated, isLoading } = useAuth();
+  const location = useLocation();
   const context = useOutletContext();
 
   if (isLoading) return null;
-  return isAuthenticated ? (
-    <Outlet context={context} />
-  ) : (
-    <Navigate to="/login" replace />
-  );
+
+  if (!isAuthenticated) {
+    const from = `${location.pathname}${location.search}`;
+
+    return <Navigate to="/login" replace state={{ from }} />;
+  }
+
+  return <Outlet context={context} />;
 }
 
 export function PublicRoute() {
