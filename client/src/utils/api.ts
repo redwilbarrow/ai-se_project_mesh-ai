@@ -38,6 +38,10 @@ async function request<T>(
     throw new Error(body?.error?.message || "Request failed");
   }
 
+  if (res.status === 204) {
+    return { success: true, data: null, error: null };
+  }
+
   return res.json();
 }
 
@@ -67,6 +71,14 @@ export function registerUser(name: string, email: string, password: string) {
 
 export const getDocuments = (): Promise<ApiResponse<KnowledgeDoc[]>> => {
   return request<KnowledgeDoc[]>(`${BASE_URL}/documents`);
+};
+
+export const deleteDocument = (
+  documentId: string,
+): Promise<ApiResponse<null>> => {
+  return request<null>(`${BASE_URL}/documents/${documentId}`, {
+    method: "DELETE",
+  });
 };
 
 export const uploadDocument = async (

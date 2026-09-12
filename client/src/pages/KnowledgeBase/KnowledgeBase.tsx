@@ -1,7 +1,7 @@
 import "./KnowledgeBase.css";
 import { useState, useEffect } from "react";
 import type { KnowledgeDoc } from "../../types";
-import { getDocuments, uploadDocument } from "../../utils/api";
+import { deleteDocument, getDocuments, uploadDocument } from "../../utils/api";
 import UploadArea from "../../components/UploadArea/UploadArea";
 import deleteIcon from "../../assets/images/delete-icon.svg";
 
@@ -11,10 +11,19 @@ export default function KnowledgeBase() {
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  const handleDeleteDocument = (documentId: string) => {
-    setDocuments((prevDocuments) =>
-      prevDocuments.filter((document) => document._id !== documentId),
-    );
+  const handleDeleteDocument = async (documentId: string) => {
+    setError(null);
+
+    try {
+      await deleteDocument(documentId);
+      setDocuments((prevDocuments) =>
+        prevDocuments.filter((document) => document._id !== documentId),
+      );
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to delete document.",
+      );
+    }
   };
 
   const handleFileSelect = async (file: File) => {
