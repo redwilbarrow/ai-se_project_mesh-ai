@@ -3,7 +3,12 @@ import Message from '../models/message.js';
 import Chat from '../models/chat.js';
 import Document from '../models/document.js';
 import Chunk from '../models/chunk.js';
-import { getClient, LLM_MODEL, buildContext } from '../utils/openai-client.js';
+import {
+  getClient,
+  LLM_MODEL,
+  buildContext,
+  stripThinking,
+} from '../utils/openai-client.js';
 import { createEmbedding } from '../utils/embeddings.js';
 import { rankBySimilarity } from '../utils/vector-search.js';
 
@@ -70,8 +75,9 @@ export const createMessage = async (
     temperature: 0.2,
   });
 
-  let answer = response.choices[0]!.message.content ?? 'No answer returned';
-  answer = answer.replace(/<think>[\s\S]*?<\/think>\s*/g, '').trim();
+  const answer =
+    stripThinking(response.choices[0]!.message.content ?? '') ||
+    'No answer returned.';
 
   // TODO: make message creation atomic so user and assistant messages are saved together
   const userMessage = await Message.create({

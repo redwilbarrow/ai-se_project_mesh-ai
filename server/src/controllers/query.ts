@@ -1,7 +1,12 @@
 import type { Request, Response } from 'express';
 import Chunk from '../models/chunk.js';
 import Document from '../models/document.js';
-import { getClient, LLM_MODEL, buildContext } from '../utils/openai-client.js';
+import {
+  getClient,
+  LLM_MODEL,
+  buildContext,
+  stripThinking,
+} from '../utils/openai-client.js';
 import { createEmbedding } from '../utils/embeddings.js';
 import { rankBySimilarity } from '../utils/vector-search.js';
 
@@ -46,7 +51,7 @@ export const queryDocuments = async (
       {
         role: 'system',
         content:
-          'You are a helpful research assistant. Answer the question using only the provided context. If the context does not contain enough information to answer, say so. /no_think',
+          'You are a helpful research assistant. Answer the question using only the provided context. If the context does not contain enough information to answer, say so.',
       },
       {
         role: 'user',
@@ -56,8 +61,9 @@ export const queryDocuments = async (
     temperature: 0.2,
   });
 
-  let answer = response.choices[0]!.message.content ?? 'No answer returned';
-  answer = answer.replace(/<think>[\s\S]*?<\/think>\s*/g, '').trim();
+  const answer =
+    stripThinking(response.choices[0]!.message.content ?? '') ||
+    'No answer returned.';
 
   res.status(200).json({
     success: true,
