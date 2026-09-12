@@ -5,7 +5,10 @@ import Message from '../models/message.js';
 export const getChats = async (req: Request, res: Response): Promise<void> => {
   const userId = req.user!.userId;
   // TODO: add error handling for chat lookup
-  const chats = await Chat.find({ userId });
+  const chats = await Chat.find({ userId }).sort({
+    createdAt: -1,
+    _id: -1,
+  });
 
   res.status(200).json({
     success: true,

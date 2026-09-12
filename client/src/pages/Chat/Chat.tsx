@@ -25,6 +25,10 @@ const formatMessageTime = (createdAt: string): string => {
     .toLowerCase();
 };
 
+const getDisplayChatTitle = (title: string): string => {
+  return title.length > 20 ? `${title.slice(0, 17)}...` : title;
+};
+
 export default function Chat() {
   const [chats, setChats] = useState<ChatType[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
@@ -208,7 +212,7 @@ export default function Chat() {
                   setIsMobileMenuOpen(false);
                 }}
               >
-                {c.title}
+                <span title={c.title}>{getDisplayChatTitle(c.title)}</span>
               </li>
             ))}
           </ul>
