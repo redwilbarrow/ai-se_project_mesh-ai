@@ -43,6 +43,30 @@ async function request<T>(
   return res.json();
 }
 
+export function loginUser(email: string, password: string) {
+  return request<{ token: string; user: CurrentUser }>(
+    `${BASE_URL}/auth/login`,
+    {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    },
+  );
+}
+
+export function getCurrentUser() {
+  return request<CurrentUser>(`${BASE_URL}/users/me`);
+}
+
+export function registerUser(name: string, email: string, password: string) {
+  return request<{ userId: string; name: string; email: string }>(
+    `${BASE_URL}/auth/register`,
+    {
+      method: "POST",
+      body: JSON.stringify({ name, email, password }),
+    },
+  );
+}
+
 export const getDocuments = async (): Promise<ApiResponse<KnowledgeDoc[]>> => {
   await delay(700);
   return {
@@ -229,21 +253,6 @@ export const getChat = async (
     },
     error: null,
   };
-};
-
-export const getCurrentUser = async (): Promise<CurrentUser> => {
-  const response = await fetch("/api/users/me", {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("auth-token")}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Unable to fetch current user");
-  }
-
-  const result = await response.json();
-  return result.data;
 };
 
 export const createChat = async (title: string): Promise<ApiResponse<Chat>> => {

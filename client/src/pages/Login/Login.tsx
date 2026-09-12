@@ -1,17 +1,34 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import { loginUser } from "../../utils/api";
 import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 import logo from "../../assets/images/logo-2.png";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const { values, errors, isValid, handleChange } = useFormWithValidation();
   const [submitError, setSubmitError] = useState("");
 
-  const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(values);
+    setSubmitError("");
 
-    setSubmitError("An error occurred. Please try again later");
+    try {
+      const res = await loginUser(values.email ?? "", values.password ?? "");
+
+      if (res.data) {
+        login(res.data.token, res.data.user);
+        navigate("/knowledge");
+      }
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "An error occurred. Please try again later",
+      );
+    }
   };
 
   function getNavLinkClass({ isActive }: { isActive: boolean }) {

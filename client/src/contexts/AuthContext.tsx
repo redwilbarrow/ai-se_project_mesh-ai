@@ -127,8 +127,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     getCurrentUser()
       .then((user) => {
-        setCurrentUser(user);
-        setIsAuthenticated(true);
+        if (user.data) {
+          setCurrentUser(user.data);
+          setIsAuthenticated(true);
+        }
       })
       .catch(() => {
         localStorage.removeItem("auth-token");

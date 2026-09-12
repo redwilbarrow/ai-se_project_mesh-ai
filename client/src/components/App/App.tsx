@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { ProtectedRoute, PublicRoute } from "../ProtectedRoute/ProtectedRoute";
 import Login from "../../pages/Login/Login";
 import Register from "../../pages/Register/Register";
 import Intro from "../../pages/Intro/Intro";
@@ -10,8 +11,10 @@ import AppLayout from "../AppLayout/AppLayout";
 function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route element={<PublicRoute />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Route>
       <Route
         path="/"
         element={
@@ -21,8 +24,11 @@ function App() {
         }
       ></Route>
       <Route element={<AppLayout />}>
-        <Route path="/knowledge" element={<KnowledgeBase />} />
-        <Route path="/chat" element={<Chat />} />
+        {" "}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/knowledge" element={<KnowledgeBase />} />
+          <Route path="/chat" element={<Chat />} />
+        </Route>
       </Route>
     </Routes>
   );
