@@ -151,34 +151,3 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     error: null,
   });
 };
-
-// Lesson instructions only said to implement `register` and `login`,
-// but previous submission for Project 2 Part 2 was rejected for not
-// having implemented `getCurrentUser`. Not sure if I did this correctly.
-export const getCurrentUser = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  const userId = req.user!.userId;
-
-  const user = await User.findById(userId);
-  if (!user) {
-    res.status(404).json({
-      success: false,
-      data: null,
-      error: { message: 'User not found' },
-    });
-    return;
-  }
-
-  res.status(200).json({
-    success: true,
-    data: {
-      userId: user._id,
-      email: user.email,
-      name: user.name,
-      createdAt: user.createdAt,
-    },
-    error: null,
-  });
-};

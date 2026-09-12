@@ -9,11 +9,12 @@ import { createMessage } from '../controllers/messages.js';
 import { auth } from '../middleware/auth.js';
 
 const chatRouter = Router();
+chatRouter.use(auth);
 
-chatRouter.get('/', auth, getChats);
-chatRouter.post('/', auth, createChat);
-chatRouter.get('/:id', auth, getChat);
-chatRouter.delete('/:id', auth, deleteChat);
-chatRouter.post('/:id/messages', auth, createMessage);
+chatRouter.get("/", getChats);
+chatRouter.post("/", createChat);
+chatRouter.get("/:id", getChat);
+chatRouter.delete("/:id", deleteChat);
+chatRouter.post("/:id/messages", createMessage);
 
 export { chatRouter };
