@@ -33,7 +33,7 @@
   color: rgba(28, 28, 28);
 }
 
-.upload-area__label:hover img {
+.upload-area__label:hover .upload-area__upload-icon {
   opacity: 1;
 }
 

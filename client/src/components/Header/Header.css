@@ -65,26 +65,69 @@
   position: relative;
 }
 
-.header__menu {
+.header__account-menu {
   position: absolute;
   top: 100%;
+  width: 100%;
   right: 0;
-  margin: 4px 0 0;
-  padding: 4px 0;
   list-style: none;
   background-color: #fff;
-  border: 1px solid rgb(0 0 0 / 0.1);
+  box-shadow: 0px 4px 12px 0px #0000001a;
   border-radius: 4px;
   z-index: 102;
 }
 
+.header__dropdown-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: 0;
+  padding: 9.5px 16px;
+  border-radius: 4px;
+  background-color: #1c1c1c0d;
+  gap: 10px;
+}
+
+.header__dropdown-btn::after {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url(../../assets/images/chevron-down.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 .header__logout-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
-  padding: 8px 12px;
+  padding: 10px 14px 10px 16px;
   border: 0;
   background: none;
   cursor: pointer;
   white-space: nowrap;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: 0;
+  color: #dc2626;
+}
+
+.header__logout-btn::after {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url(../../assets/images/log-out.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 @media (max-width: 1200px) {
@@ -124,5 +167,19 @@
 
   .header__nav-link {
     width: 100%;
+  }
+
+  .header__account {
+    width: 100%;
+  }
+
+  .header__dropdown-btn {
+    width: 100%;
+    align-items: center;
+  }
+
+  .header__logout-btn {
+    justify-content: start;
+    gap: 10px;
   }
 }

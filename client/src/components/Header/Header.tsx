@@ -76,7 +76,7 @@ export default function Header({
               </button>
 
               {isAccountMenuOpen && (
-                <ul className="header__menu" role="menu">
+                <ul className="header__account-menu" role="menu">
                   <li role="none">
                     <button
                       type="button"
