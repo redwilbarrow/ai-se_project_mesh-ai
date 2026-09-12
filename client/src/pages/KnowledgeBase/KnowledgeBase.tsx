@@ -1,7 +1,7 @@
 import "./KnowledgeBase.css";
 import { useState, useEffect } from "react";
-import type { KnowledgeDoc } from "../../utils/api";
-import { getDocuments } from "../../utils/api";
+import type { KnowledgeDoc } from "../../types";
+import { getDocuments, uploadDocument } from "../../utils/api";
 import UploadArea from "../../components/UploadArea/UploadArea";
 import deleteIcon from "../../assets/images/delete-icon.svg";
 
@@ -9,6 +9,7 @@ export default function KnowledgeBase() {
   const [documents, setDocuments] = useState<KnowledgeDoc[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleDeleteDocument = (documentId: string) => {
     setDocuments((prevDocuments) =>
@@ -16,15 +17,23 @@ export default function KnowledgeBase() {
     );
   };
 
-  const handleFileSelect = (file: File) => {
-    const newDoc: KnowledgeDoc = {
-      _id: Date.now().toString(),
-      title: file.name,
-      fileName: file.name,
-      userId: "local",
-      createdAt: new Date().toISOString(),
-    };
-    setDocuments((prev) => [newDoc, ...prev]); // Used the functional update instead of `[newDoc, ...documents]` to ensure latest state is used.
+  const handleFileSelect = async (file: File) => {
+    setIsUploading(true);
+    setError(null);
+
+    try {
+      const res = await uploadDocument(file);
+
+      if (res.data) {
+        setDocuments((prevDocuments) => [res.data!, ...prevDocuments]);
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to upload document.",
+      );
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   useEffect(() => {
@@ -47,11 +56,11 @@ export default function KnowledgeBase() {
       <h1 className="knowledge-base__title">Manage Your Knowledge Base</h1>
       <section className="knowledge-base__content">
         <p className="knowledge-base__description">Upload documents (PDF)</p>
-        <UploadArea onFileSelect={handleFileSelect} />
+        <UploadArea onFileSelect={handleFileSelect} isUploading={isUploading} />
         {isLoading && <p className="knowledge-base__status">Loading...</p>}
         {!isLoading && error && (
           <p className="knowledge-base__status knowledge-base__status_error">
-            Failed to load documents.
+            {error}
           </p>
         )}
         {!isLoading && !error && documents.length === 0 && (

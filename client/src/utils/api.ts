@@ -67,42 +67,42 @@ export function registerUser(name: string, email: string, password: string) {
   );
 }
 
-export const getDocuments = async (): Promise<ApiResponse<KnowledgeDoc[]>> => {
-  await delay(700);
-  return {
-    success: true,
-    data: [
-      {
-        _id: "1",
-        title: "Code Review Guidelines",
-        fileName: "code-review-guidelines.pdf",
-        userId: "u1",
-        createdAt: new Date().toISOString(),
-      },
-      {
-        _id: "2",
-        title: "API Reference",
-        fileName: "api-reference.pdf",
-        userId: "u1",
-        createdAt: new Date().toISOString(),
-      },
-      {
-        _id: "3",
-        title: "Onboarding Guide",
-        fileName: "onboarding-guide.pdf",
-        userId: "u1",
-        createdAt: new Date().toISOString(),
-      },
-      {
-        _id: "4",
-        title: "Code of Conduct",
-        fileName: "code_of_conduct.pdf",
-        userId: "u1",
-        createdAt: new Date().toISOString(),
-      },
-    ],
-    error: null,
-  };
+export const getDocuments = (): Promise<ApiResponse<KnowledgeDoc[]>> => {
+  return request<KnowledgeDoc[]>(`${BASE_URL}/documents`);
+};
+
+export const uploadDocument = async (
+  file: File,
+): Promise<ApiResponse<KnowledgeDoc>> => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const token = localStorage.getItem("auth-token") ?? "";
+
+  const res = await fetch(`${BASE_URL}/documents`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (res.status === 401) {
+    const body = await res.json().catch(() => null);
+    const message = body?.error?.message || "Invalid credentials";
+
+    localStorage.removeItem("auth-token");
+    window.location.href = "/login";
+
+    throw new Error(message);
+  }
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.error?.message || "Request failed");
+  }
+
+  return res.json();
 };
 
 export const getChats = async (): Promise<ApiResponse<Chat[]>> => {
