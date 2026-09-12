@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 
-export const LLM_MODEL = 'Qwen/Qwen3-32B';
+// Used a currently available Nebius chat model.
+export const LLM_MODEL = 'Qwen/Qwen3-30B-A3B-Instruct-2507';
 
 let client: OpenAI;
 
