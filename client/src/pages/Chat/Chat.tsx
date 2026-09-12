@@ -1,7 +1,7 @@
 import "./Chat.css";
 import errorIcon from "../../assets/images/error-icon.png";
 import { useState, useEffect, useRef } from "react";
-import { useOutletContext, useNavigate } from "react-router-dom";
+import { useOutletContext, useNavigate, useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { getChats, getChat, createChat, sendMessage } from "../../utils/api";
 import type { Chat as ChatType, Message } from "../../types";
@@ -31,7 +31,6 @@ const getDisplayChatTitle = (title: string): string => {
 
 export default function Chat() {
   const [chats, setChats] = useState<ChatType[]>([]);
-  const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [chatsError, setChatsError] = useState<string | null>(null);
   const [isLoadingChats, setIsLoadingChats] = useState(true);
   const [isCreatingChat, setIsCreatingChat] = useState(false);
@@ -47,6 +46,7 @@ export default function Chat() {
   const messagesEndRef = useRef<HTMLLIElement>(null);
 
   const navigate = useNavigate();
+  const { chatId: activeChatId } = useParams<{ chatId: string }>();
 
   const { isMobileMenuOpen, setIsMobileMenuOpen } =
     useOutletContext<MobileContext>();
@@ -100,7 +100,7 @@ export default function Chat() {
       const res = await createChat(title);
       if (res.data) {
         setChats((prevChats) => [res.data!, ...prevChats]);
-        setActiveChatId(res.data._id);
+        navigate(`/chat/${res.data._id}`);
         setIsMobileMenuOpen(false);
       }
     } catch {
@@ -208,7 +208,7 @@ export default function Chat() {
                     : "chat__chat-item"
                 }
                 onClick={() => {
-                  setActiveChatId(c._id);
+                  navigate(`/chat/${c._id}`);
                   setIsMobileMenuOpen(false);
                 }}
               >
@@ -264,7 +264,6 @@ export default function Chat() {
                 onClick={() => {
                   setMessagesError("");
                   setMessages([]);
-                  setActiveChatId(null);
                   navigate("/chat");
                 }}
               >

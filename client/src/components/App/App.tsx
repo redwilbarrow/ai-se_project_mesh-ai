@@ -27,7 +27,7 @@ function App() {
         {" "}
         <Route element={<ProtectedRoute />}>
           <Route path="/knowledge" element={<KnowledgeBase />} />
-          <Route path="/chat" element={<Chat />} />
+          <Route path="/chat/:chatId?" element={<Chat />} />
         </Route>
       </Route>
     </Routes>
