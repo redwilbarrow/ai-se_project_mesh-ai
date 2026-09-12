@@ -1,11 +1,10 @@
 import "./Chat.css";
 import errorIcon from "../../assets/images/error-icon.png";
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { getChats, getChat, createChat, sendMessage } from "../../utils/api";
-import type { Chat as ChatType } from "../../utils/api";
-import type { Message } from "../../utils/api";
+import type { Chat as ChatType, Message } from "../../types";
 
 type MobileContext = {
   isMobileMenuOpen: boolean;
@@ -41,7 +40,7 @@ export default function Chat() {
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
 
-  const messagesRef = useRef<HTMLUListElement | null>(null);
+  const messagesEndRef = useRef<HTMLLIElement>(null);
 
   const navigate = useNavigate();
 
@@ -83,12 +82,8 @@ export default function Chat() {
     load();
   }, [activeChatId]);
 
-  useLayoutEffect(() => {
-    const messagesElement = messagesRef.current;
-
-    if (!messagesElement) return;
-
-    messagesElement.scrollTop = messagesElement.scrollHeight;
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleCreateChat = async () => {
@@ -156,7 +151,11 @@ export default function Chat() {
   };
 
   return (
-    <div className="chat">
+    <div
+      className={
+        activeChatId && messages.length > 0 ? "chat chat_has-messages" : "chat"
+      }
+    >
       <aside
         className={`chat__sidebar${isMobileMenuOpen ? " chat__sidebar_open" : ""}`}
       >
@@ -220,7 +219,7 @@ export default function Chat() {
         {!messagesError && !isLoadingMessages && !activeChatId && (
           <div className="chat__no-messages">
             <h1 className="chat__main-title">
-              Create a new chat or select an existing chat to start the
+              Create a new chat or select an existing one to start the
               conversation
             </h1>
             <button
@@ -294,7 +293,7 @@ export default function Chat() {
                 </h1>
               </div>
             ) : (
-              <ul ref={messagesRef} className="chat__messages">
+              <ul className="chat__messages">
                 {messages.map((msg) => (
                   <li
                     key={msg._id}
@@ -325,9 +324,10 @@ export default function Chat() {
                 ))}
                 {isSending && (
                   <li className="chat__message chat__message_assistant chat__message_thinking">
-                    Thinking...
+                    Thinking…
                   </li>
                 )}
+                <li ref={messagesEndRef} />
               </ul>
             )}
 
