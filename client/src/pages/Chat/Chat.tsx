@@ -127,8 +127,12 @@ export default function Chat() {
 
     try {
       const res = await sendMessage(activeChatId, text);
+
       if (res.data) {
-        setMessages((prev) => [...prev, res.data!]);
+        setMessages((prev) => [
+          ...prev.filter((message) => message._id !== userMessage._id),
+          ...res.data,
+        ]);
       }
     } catch {
       const errorMessage: Message = {
@@ -150,8 +154,6 @@ export default function Chat() {
       handleSend();
     }
   };
-
-  console.log(isMobileMenuOpen);
 
   return (
     <div className="chat">
@@ -321,6 +323,11 @@ export default function Chat() {
                     </div>
                   </li>
                 ))}
+                {isSending && (
+                  <li className="chat__message chat__message_assistant chat__message_thinking">
+                    Thinking...
+                  </li>
+                )}
               </ul>
             )}
 
